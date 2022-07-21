@@ -48,4 +48,14 @@ async function finishRental(req, res) {
 
 }
 
-export { createRental, getRentals, finishRental };
+async function deleteRental(req,res){
+  const rental = res.locals.rental;
+  try{
+    await connection.query('DELETE FROM rentals WHERE id = $1', [rental.id]);
+    res.sendStatus(200);
+  }catch(err){
+    res.sendStatus(500);
+  }
+}
+
+export { createRental, getRentals, finishRental, deleteRental };
