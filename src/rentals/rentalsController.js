@@ -13,18 +13,9 @@ const mapRental = async rental => {
 }
 
 async function getRentals(req, res) {
-  const { customerId, gameId } = req.query;
-  let dbQuery = 'SELECT * FROM rentals';
-  let value;
-  if (customerId) {
-    value = customerId;
-    dbQuery += ' WHERE "customerId" = $1'
-  };
-  if (gameId) {
-    value = gameId;
-    dbQuery += ' WHERE "gameId" = $1'
-  };
-  const { rows: rentals } = await connection.query(dbQuery, value && [value]);
+  const dbQuery = res.locals.dbQuery;
+  const value = res.locals.value;
+  const { rows: rentals } = await connection.query(dbQuery, value.length !== 0 && value);
   const newRentals = await Promise.all(rentals.map(mapRental));
   console.log(newRentals);
   res.status(200).send(newRentals);

@@ -24,4 +24,27 @@ async function createRentalValidation(req, res, next) {
   next();
 }
 
-export { createRentalValidation };
+function getRentalQueryHandler(req, res, next) {
+  const { customerId, gameId } = req.query;
+  let dbQuery = 'SELECT * FROM rentals';
+  let value = [];
+  if (customerId && gameId) {
+    value.push(customerId);
+    value.push(gameId);
+    dbQuery += ' WHERE "customerId" = $1 AND "gameId" = $2';
+  } else {
+    if (customerId) {
+      value.push(customerId);
+      dbQuery += ' WHERE "customerId" = $1'
+    };
+    if (gameId) {
+      value.push(gameId);
+      dbQuery += ' WHERE "gameId" = $1'
+    };
+  }
+  res.locals.dbQuery = dbQuery;
+  res.locals.value = value;
+  next();
+}
+
+export { createRentalValidation, getRentalQueryHandler };
