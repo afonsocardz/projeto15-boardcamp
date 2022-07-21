@@ -1,15 +1,19 @@
 import dayjs from "dayjs";
 import connection from "../databases/postgres.js";
 
-const mapRental = async rental => {
-  const { rows: [customer] } = await connection.query('SELECT id, name FROM customers WHERE id = $1', [rental.customerId]);
-  const { rows: [game] } = await connection.query('SELECT games.id, games.name, "categoryId", categories.name AS "categoryName" FROM games INNER JOIN categories ON games."categoryId" = categories.id WHERE games.id = $1', [rental.gameId]);
-  console.log(customer);
-  console.log(game);
+const mapRental = rental => {
   return {
     ...rental,
-    customer,
-    game,
+    customer: {
+      id: rental.customerId,
+      name: rental.customerName,
+    },
+    game: {
+      id: rental.gameId,
+      name: rental.gameName,
+      categoryId: rental.categoryId,
+      categoryName: rental.categoryName
+    },
   }
 }
 
@@ -17,7 +21,7 @@ async function getRentals(req, res) {
   const dbQuery = res.locals.dbQuery;
   const value = res.locals.value;
   const { rows: rentals } = await connection.query(dbQuery, value.length !== 0 && value);
-  const newRentals = await Promise.all(rentals.map(mapRental));
+  const newRentals = rentals.map(mapRental);
   console.log(newRentals);
   res.status(200).send(newRentals);
 }
