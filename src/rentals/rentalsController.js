@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import connection from "../databases/postgres.js";
 
 const mapRental = async rental => {
@@ -28,4 +29,23 @@ async function createRental(req, res) {
   res.sendStatus(201);
 }
 
-export { createRental, getRentals };
+async function finishRental(req, res) {
+  const rental = res.locals.rental;
+  try { 
+    const { rows: [game] } = await connection.query('SELECT "pricePerDay" FROM games WHERE id = $1', [rental.gameId]);
+
+    const today = dayjs();
+    const rentDate = dayjs(rental.rentDate);
+    const delayedDays = today.diff(rentDate, "day") - rental.daysRented;
+    const delayFee = delayedDays * game.pricePerDay;
+
+    await connection.query('UPDATE rentals SET "delayFee" = $1, "returnDate" = $2 WHERE id = $3', [delayFee, today, rental.id]);
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+
+}
+
+export { createRental, getRentals, finishRental };

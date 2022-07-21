@@ -47,4 +47,18 @@ function getRentalQueryHandler(req, res, next) {
   next();
 }
 
-export { createRentalValidation, getRentalQueryHandler };
+async function finishRentalValidate(req, res, next) {
+  const { id } = req.params;
+  const { rows: [rental] } = await connection.query('SELECT * FROM rentals WHERE id = $1', [id]);
+  console.log(rental);
+  if (!rental) {
+    return res.sendStatus(404);
+  }
+  if (rental.returnDate) {
+    return res.sendStatus(400);
+  }
+  res.locals.rental = rental;
+  next();
+}
+
+export { createRentalValidation, getRentalQueryHandler, finishRentalValidate };
