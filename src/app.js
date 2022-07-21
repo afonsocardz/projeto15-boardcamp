@@ -2,6 +2,7 @@ import express, {json} from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import categoriesRoute from './categories/categoriesRoute.js';
+import gamesRoute from './games/gamesRoute.js';
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -10,6 +11,7 @@ app.use(json());
 app.use(cors());
 
 app.use("/categories", categoriesRoute);
+app.use("/games", gamesRoute);
 
 app.listen(PORT, () => {
   console.log('server is running on port ' + PORT);
