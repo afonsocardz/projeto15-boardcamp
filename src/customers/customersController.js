@@ -13,10 +13,11 @@ async function getCustomers(req, res) {
 async function getCustomersById(req, res) {
   const { id } = req.params;
   console.log(id);
-  const { rows: customer } = await connection.query('SELECT * FROM customers WHERE id = $1', [id]);
+  const { rows: [customer] } = await connection.query('SELECT * FROM customers WHERE id = $1', [id]);
   if(customer.length === 0){
     return res.sendStatus(404);
   }
+  
   res.status(200).send(customer);
 }
 
