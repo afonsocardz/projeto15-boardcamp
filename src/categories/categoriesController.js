@@ -1,7 +1,9 @@
 import connection from "../databases/postgres.js";
 
 async function getCategories(req, res) {
-  const {rows} = await connection.query('SELECT * FROM categories');
+  const dbQuery = res.locals.dbQuery;
+  const values = res.locals.values;
+  const {rows} = await connection.query(dbQuery,values);
   res.status(200).send(rows);
 };
 

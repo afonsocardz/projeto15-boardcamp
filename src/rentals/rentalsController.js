@@ -19,8 +19,8 @@ const mapRental = rental => {
 
 async function getRentals(req, res) {
   const dbQuery = res.locals.dbQuery;
-  const value = res.locals.value;
-  const { rows: rentals } = await connection.query(dbQuery, value.length !== 0 && value);
+  const values = res.locals.values;
+  const { rows: rentals } = await connection.query(dbQuery, values);
   const newRentals = rentals.map(mapRental);
   console.log(newRentals);
   res.status(200).send(newRentals);
@@ -35,7 +35,7 @@ async function createRental(req, res) {
 
 async function finishRental(req, res) {
   const rental = res.locals.rental;
-  try { 
+  try {
     const { rows: [game] } = await connection.query('SELECT "pricePerDay" FROM games WHERE id = $1', [rental.gameId]);
 
     const today = dayjs();
@@ -52,12 +52,12 @@ async function finishRental(req, res) {
 
 }
 
-async function deleteRental(req,res){
+async function deleteRental(req, res) {
   const rental = res.locals.rental;
-  try{
+  try {
     await connection.query('DELETE FROM rentals WHERE id = $1', [rental.id]);
     res.sendStatus(200);
-  }catch(err){
+  } catch (err) {
     res.sendStatus(500);
   }
 }
