@@ -3,7 +3,6 @@ import connection from "../databases/postgres.js";
 async function getGames(req, res) {
   const dbQuery = res.locals.dbQuery;
   const values = res.locals.values;
-  console.log(values);
   const { rows: game } = await connection.query(dbQuery, values);
   res.status(200).send(game);
 }

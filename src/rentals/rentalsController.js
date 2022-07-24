@@ -46,8 +46,7 @@ async function finishRental(req, res) {
     const today = dayjs();
     const rentDate = dayjs(rental.rentDate);
     const delayedDays = today.diff(rentDate, "day") - rental.daysRented;
-    const delayFee = delayedDays * game.pricePerDay;
-
+    const delayFee = delayedDays > 0 ? delayedDays * game.pricePerDay : 0;
     await connection.query('UPDATE rentals SET "delayFee" = $1, "returnDate" = $2 WHERE id = $3', [delayFee, today, rental.id]);
     res.sendStatus(200);
   } catch (err) {

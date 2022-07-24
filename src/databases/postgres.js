@@ -1,19 +1,11 @@
+import dotenv from "dotenv";
 import pg from "pg";
 
+dotenv.config();
 const { Pool } = pg;
 
-const user = 'bootcamp_role';
-const password = 'senha_super_hiper_ultra_secreta_do_role_do_bootcamp';
-const host = 'localhost';
-const port = 5432;
-const database = 'boardcamp';
-
 const connection = new Pool({
-  user,
-  password,
-  host,
-  port,
-  database,
+  connectionString: process.env.DATABASE_URL
 });
 
 export default connection;

@@ -59,7 +59,6 @@ function getRentalQueryHandler(req, res, next) {
 async function finishRentalValidate(req, res, next) {
   const { id } = req.params;
   const { rows: [rental] } = await connection.query('SELECT * FROM rentals WHERE id = $1', [id]);
-  console.log(rental);
   if (!rental) {
     return res.sendStatus(404);
   }
