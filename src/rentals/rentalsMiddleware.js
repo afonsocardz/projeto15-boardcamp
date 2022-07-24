@@ -27,23 +27,23 @@ async function createRentalValidation(req, res, next) {
 function getRentalQueryHandler(req, res, next) {
   const { customerId, gameId } = req.query;
   let dbQuery = 'SELECT RENTALS.*, CUSTOMERS.NAME AS "customerName", GAMES.NAME AS "gameName", GAMES."categoryId", CATEGORIES.NAME AS "categoryName"FROM RENTALS INNER JOIN CUSTOMERS ON CUSTOMERS.ID = RENTALS."customerId" INNER JOIN GAMES ON GAMES.ID = RENTALS."gameId" INNER JOIN CATEGORIES ON GAMES."categoryId" = CATEGORIES.ID';
-  let value = [];
+  let values = [];
   if (customerId && gameId) {
-    value.push(customerId);
-    value.push(gameId);
+    values.push(customerId);
+    values.push(gameId);
     dbQuery += ' WHERE "customerId" = $1 AND "gameId" = $2';
   } else {
     if (customerId) {
-      value.push(customerId);
+      values.push(customerId);
       dbQuery += ' WHERE "customerId" = $1'
     };
     if (gameId) {
-      value.push(gameId);
+      values.push(gameId);
       dbQuery += ' WHERE "gameId" = $1'
     };
   }
   res.locals.dbQuery = dbQuery;
-  res.locals.value = value;
+  res.locals.values = values;
   next();
 }
 

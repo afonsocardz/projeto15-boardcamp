@@ -1,12 +1,10 @@
 import connection from "../databases/postgres.js";
 
 async function getGames(req, res) {
-  let dbQuery = 'SELECT games.id AS id, games.name, image, "stockTotal", "categoryId", "pricePerDay", categories.name AS "categoryName" FROM games  INNER JOIN categories ON games."categoryId" = categories.id';
-  const {name} = req.query;
-  if(name){
-    dbQuery =  dbQuery + ` WHERE games.name ILIKE '%${name}%'`;
-  }
-  const {rows: game} = await connection.query(dbQuery);
+  const dbQuery = res.locals.dbQuery;
+  const values = res.locals.values;
+  console.log(values);
+  const { rows: game } = await connection.query(dbQuery, values);
   res.status(200).send(game);
 }
 

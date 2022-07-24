@@ -1,12 +1,9 @@
 import connection from "../databases/postgres.js"
 
 async function getCustomers(req, res) {
-  const { cpf } = req.query;
-  let dbQuery = 'SELECT * FROM customers';
-  if (cpf) {
-    dbQuery += ` WHERE cpf LIKE '${cpf}%'`;
-  }
-  const { rows: customers } = await connection.query(dbQuery)
+  const dbQuery = res.locals.dbQuery;
+  const values = res.locals.values;
+  const { rows: customers } = await connection.query(dbQuery,values);
   res.status(200).send(customers);
 };
 

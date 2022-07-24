@@ -1,5 +1,11 @@
 import connection from "../databases/postgres.js";
 
+function getCategoriesQuery(req,res,next){
+  const dbQuery = 'SELECT * FROM categories';
+  res.locals.dbQuery = dbQuery;
+  next();
+}
+
 async function createCategoryValidation(req, res, next) {
   const {name} = req.body;
   if(!name){
@@ -13,4 +19,4 @@ async function createCategoryValidation(req, res, next) {
   next();
 }
 
-export {createCategoryValidation};
+export {createCategoryValidation, getCategoriesQuery};
