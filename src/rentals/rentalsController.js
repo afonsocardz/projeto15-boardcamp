@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import connection from "../databases/postgres.js";
 
 const mapRental = rental => {
-  return {
+  const obj = {
     ...rental,
     customer: {
       id: rental.customerId,
@@ -14,7 +14,12 @@ const mapRental = rental => {
       categoryId: rental.categoryId,
       categoryName: rental.categoryName
     },
-  }
+  };
+  delete obj.customerName;
+  delete obj.gameName;
+  delete obj.categoryId;
+  delete obj.categoryName;
+  return obj;
 }
 
 async function getRentals(req, res) {

@@ -25,7 +25,7 @@ async function createRentalValidation(req, res, next) {
 }
 
 function getRentalQueryHandler(req, res, next) {
-  const { customerId, gameId } = req.query;
+  const { customerId, gameId, status, startDate } = req.query;
   let dbQuery = 'SELECT RENTALS.*, CUSTOMERS.NAME AS "customerName", GAMES.NAME AS "gameName", GAMES."categoryId", CATEGORIES.NAME AS "categoryName"FROM RENTALS INNER JOIN CUSTOMERS ON CUSTOMERS.ID = RENTALS."customerId" INNER JOIN GAMES ON GAMES.ID = RENTALS."gameId" INNER JOIN CATEGORIES ON GAMES."categoryId" = CATEGORIES.ID';
   let values = [];
   if (customerId && gameId) {
@@ -41,6 +41,15 @@ function getRentalQueryHandler(req, res, next) {
       values.push(gameId);
       dbQuery += ' WHERE "gameId" = $1'
     };
+  }
+  if (status) {
+    dbQuery += dbQuery.includes('WHERE') ? " AND" : " WHERE";
+    dbQuery += status === "open" ? ' "returnDate" IS NULL' : ' "returnDate" IS NOT NULL' ;
+  }
+  if(startDate){
+    dbQuery += dbQuery.includes('WHERE') ? " AND" : " WHERE";
+    dbQuery += '"rentDate" >= $' + values.length + 1;
+    values.push(startDate);
   }
   res.locals.dbQuery = dbQuery;
   res.locals.values = values;
