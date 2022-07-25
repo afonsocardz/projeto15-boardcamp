@@ -1,1 +1,0 @@
-select rentals.*, customers.id as customerId, customers.name as customerName, games.id as gameId, games.name as gameName, categories.name as categoryName from rentals inner join customers on customers.id = rentals."customerId" inner join games on games.id = rentals."gameId" inner join categories on games."categoryId" = categories.id;
